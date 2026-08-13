@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joymiz Checklist - Free To-Do List Maker</title>
+    <meta name="description" content="Create multiple checklists, add items, track progress with animated checkboxes. Free online to-do list maker by Joymiz.">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --primary-light: #dbeafe;
+            --dark: #0f172a;
+            --dark-secondary: #1e293b;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-400: #94a3b8;
+            --gray-500: #64748b;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --gray-900: #0f172a;
+            --success: #10b981;
+            --success-light: #d1fae5;
+            --danger: #ef4444;
+            --danger-light: #fee2e2;
+            --warning: #f59e0b;
+            --warning-light: #fef3c7;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --radius: 8px;
+            --radius-lg: 12px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--gray-100);
+            color: var(--gray-900);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navigation */
+        nav {
+            background: var(--dark);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-md);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--primary);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.125rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--gray-300);
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover { color: white; }
+
+        /* Main Content */
+        main {
+            flex: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+            width: 100%;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .hero h1 {
+            font-size: 2.25rem;
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 0.75rem;
+        }
+
+        .hero p {
+            font-size: 1.125rem;
+            color: var(--gray-600);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Actions Bar */
+        .actions-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.625rem 1.25rem;
+            border-radius: var(--radius);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover { background: var(--primary-hover); }
+
+        .btn-outline {
+            background: white;
+            color: var(--gray-700);
+            border: 1px solid var(--gray-300);
+        }
+
+        .btn-outline:hover {
+            background: var(--gray-50);
+            border-color: var(--gray-400);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover { background: #dc2626; }
+
+        .btn-sm {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.8125rem;
+        }
+
+        .btn-icon {
+            padding: 0.375rem;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            border-radius: var(--radius);
+            color: var(--gray-500);
+            transition: all 0.2s;
+        }
+
+        .btn-icon:hover {
+            background: var(--gray-100);
+            color: var(--gray-700);
+        }
+
+        .btn-icon.danger:hover {
+            background: var(--danger-light);
+            color: var(--danger);
+        }
+
+        /* Templates Panel */
+        .templates-panel {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--gray-200);
+        }
+
+        .templates-panel h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--gray-700);
+        }
+
+        .templates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .template-btn {
+            padding: 0.75rem 1rem;
+            background: var(--gray-50);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius);
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+        }
+
+        .template-btn:hover {
+            background: var(--primary-light);
+            border-color: var(--primary);
+        }
+
+        .template-btn .template-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .template-btn .template-name {
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: var(--gray-700);
+        }
+
+        /* Checklists Container */
+        .checklists-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* Checklist Card */
+        .checklist-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--gray-200);
+            overflow: hidden;
+            transition: box-shadow 0.2s;
+        }
+
+        .checklist-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .checklist-header {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .checklist-title-input {
+            flex: 1;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--gray-900);
+            background: transparent;
+            outline: none;
+            padding: 0.25rem 0;
+        }
+
+        .checklist-title-input:focus {
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .checklist-header-actions {
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        /* Progress Bar */
+        .progress-section {
+            padding: 0.75rem 1.25rem 0;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--gray-500);
+            margin-bottom: 0.375rem;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: var(--gray-200);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 3px;
+            transition: width 0.4s ease;
+            min-width: 0;
+        }
+
+        .progress-fill.complete {
+            background: var(--success);
+        }
+
+        /* Items List */
+        .items-list {
+            padding: 0.75rem 1.25rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .items-list:empty::after {
+            content: "No items yet. Add one below!";
+            display: block;
+            text-align: center;
+            color: var(--gray-400);
+            font-size: 0.875rem;
+            padding: 2rem 0;
+        }
+
+        .item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--gray-100);
+            animation: slideIn 0.2s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .item:last-child { border-bottom: none; }
+
+        .item-checkbox {
+            position: relative;
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        .item-checkbox input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            z-index: 1;
+        }
+
+        .checkmark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--gray-300);
+            border-radius: 4px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .checkmark::after {
+            content: '';
+            width: 6px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg) scale(0);
+            transition: transform 0.2s;
+            margin-top: -2px;
+        }
+
+        .item-checkbox input:checked + .checkmark {
+            background: var(--success);
+            border-color: var(--success);
+            animation: checkBounce 0.3s ease;
+        }
+
+        .item-checkbox input:checked + .checkmark::after {
+            transform: rotate(45deg) scale(1);
+        }
+
+        @keyframes checkBounce {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .item-text {
+            flex: 1;
+            font-size: 0.9375rem;
+            color: var(--gray-800);
+            transition: all 0.3s;
+            word-break: break-word;
+        }
+
+        .item-text-input {
+            flex: 1;
+            border: none;
+            font-size: 0.9375rem;
+            color: var(--gray-800);
+            background: transparent;
+            outline: none;
+            padding: 0;
+            font-family: inherit;
+        }
+
+        .item.completed .item-text {
+            text-decoration: line-through;
+            color: var(--gray-400);
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 0.125rem;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .item:hover .item-actions { opacity: 1; }
+
+        .reorder-btn {
+            padding: 0.25rem;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: var(--gray-400);
+            border-radius: 4px;
+            font-size: 0.75rem;
+            line-height: 1;
+            transition: all 0.2s;
+        }
+
+        .reorder-btn:hover {
+            background: var(--gray-100);
+            color: var(--gray-600);
+        }
+
+        .reorder-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        /* Add Item Input */
+        .add-item-section {
+            padding: 0.75rem 1.25rem 1rem;
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .add-item-input {
+            width: 100%;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .add-item-input input {
+            flex: 1;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius);
+            font-size: 0.875rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .add-item-input input:focus {
+            border-color: var(--primary);
+        }
+
+        .add-item-input button {
+            padding: 0.5rem 1rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .add-item-input button:hover { background: var(--primary-hover); }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--gray-500);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h3 {
+            font-size: 1.25rem;
+            color: var(--gray-700);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: var(--shadow-lg);
+            transform: scale(0.95);
+            transition: transform 0.2s;
+        }
+
+        .modal-overlay.active .modal { transform: scale(1); }
+
+        .modal h3 {
+            font-size: 1.125rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .modal p {
+            color: var(--gray-600);
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+        }
+
+        /* Print Styles */
+        @media print {
+            nav, .actions-bar, .templates-panel, .add-item-section,
+            .item-actions, .checklist-header-actions, .footer { display: none !important; }
+            
+            .checklist-card {
+                box-shadow: none;
+                border: 1px solid #ddd;
+                break-inside: avoid;
+                margin-bottom: 1rem;
+            }
+
+            .items-list { max-height: none; }
+            
+            body { background: white; }
+            main { padding: 1rem; }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 1.75rem; }
+            .checklists-container { grid-template-columns: 1fr; }
+            .nav-links { display: none; }
+            .templates-grid { grid-template-columns: repeat(2, 1fr); }
+            .actions-bar { flex-direction: column; }
+            .actions-bar .btn { width: 100%; justify-content: center; }
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--dark);
+            color: var(--gray-400);
+            padding: 3rem 1.5rem;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer h4 {
+            color: white;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-tools {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-tool {
+            color: var(--gray-400);
+            text-decoration: none;
+            font-size: 0.875rem;
+            padding: 0.5rem 0;
+            transition: color 0.2s;
+        }
+
+        .footer-tool:hover { color: white; }
+
+        .footer-bottom {
+            border-top: 1px solid var(--gray-700);
+            padding-top: 1.5rem;
+            text-align: center;
+            font-size: 0.8125rem;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--dark);
+            color: white;
+            padding: 0.75rem 1.25rem;
+            border-radius: var(--radius);
+            font-size: 0.875rem;
+            box-shadow: var(--shadow-lg);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 2000;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Drag placeholder */
+        .item.dragging { opacity: 0.5; }
+        .item.drag-over { border-top: 2px solid var(--primary); }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="nav-container">
+        <a href="/" class="logo">
+            <span class="logo-icon">✓</span>
+            Joymiz Checklist
+        </a>
+        <ul class="nav-links">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">All Tools</a></li>
+            <li><a href="#">Blog</a></li>
+        </ul>
+    </div>
+</nav>
+
+<main>
+    <div class="hero">
+        <h1>Free Online Checklist Maker</h1>
+        <p>Create multiple checklists, track your progress, and stay organized. No signup required.</p>
+    </div>
+
+    <div class="actions-bar">
+        <button class="btn btn-primary" onclick="createNewChecklist()">
+            <span>+</span> New Checklist
+        </button>
+        <button class="btn btn-outline" onclick="printAll()">
+            <span>🖨</span> Print All
+        </button>
+        <button class="btn btn-outline" onclick="clearAll()">
+            <span>🗑</span> Clear All
+        </button>
+    </div>
+
+    <div class="templates-panel">
+        <h3>Quick Start Templates</h3>
+        <div class="templates-grid">
+            <button class="template-btn" onclick="createFromTemplate('travel')">
+                <div class="template-icon">✈️</div>
+                <div class="template-name">Travel Packing</div>
+            </button>
+            <button class="template-btn" onclick="createFromTemplate('moving')">
+                <div class="template-icon">📦</div>
+                <div class="template-name">Moving House</div>
+            </button>
+            <button class="template-btn" onclick="createFromTemplate('wedding')">
+                <div class="template-icon">💒</div>
+                <div class="template-name">Wedding Planning</div>
+            </button>
+            <button class="template-btn" onclick="createFromTemplate('job')">
+                <div class="template-icon">💼</div>
+                <div class="template-name">Job Search</div>
+            </button>
+            <button class="template-btn" onclick="createFromTemplate('daily')">
+                <div class="template-icon">☀️</div>
+                <div class="template-name">Daily Routine</div>
+            </button>
+            <button class="template-btn" onclick="createFromTemplate('event')">
+                <div class="template-icon">🎉</div>
+                <div class="template-name">Event Planning</div>
+            </button>
+        </div>
+    </div>
+
+    <div class="checklists-container" id="checklistsContainer">
+        <div class="empty-state" id="emptyState">
+            <div class="empty-state-icon">📋</div>
+            <h3>No checklists yet</h3>
+            <p>Create your first checklist or use a template to get started!</p>
+        </div>
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="footer-content">
+        <h4>More Joymiz Tools</h4>
+        <div class="footer-tools">
+            <a href="#" class="footer-tool">Budget Calculator</a>
+            <a href="#" class="footer-tool">Invoice Generator</a>
+            <a href="#" class="footer-tool">Resume Builder</a>
+            <a href="#" class="footer-tool">Password Generator</a>
+            <a href="#" class="footer-tool">QR Code Generator</a>
+            <a href="#" class="footer-tool">Color Picker</a>
+            <a href="#" class="footer-tool">Markdown Editor</a>
+            <a href="#" class="footer-tool">Timer & Stopwatch</a>
+        </div>
+        <div class="footer-bottom">
+            © 2026 Joymiz. Free tools for everyday tasks.
+        </div>
+    </div>
+</footer>
+
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+        <h3 id="modalTitle">Confirm</h3>
+        <p id="modalMessage">Are you sure?</p>
+        <div class="modal-actions">
+            <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+            <button class="btn btn-danger" id="modalConfirmBtn">Delete</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+    const TEMPLATES = {
+        travel: {
+            title: "Travel Packing",
+            items: ["Passport", "Wallet & cards", "Phone charger", "Travel adapter", "Medications", "Toothbrush & toothpaste", "Change of clothes", "Snacks", "Entertainment (book/tablet)", "Travel documents"]
+        },
+        moving: {
+            title: "Moving House",
+            items: ["Notify utility companies", "Forward mail", "Pack kitchen items", "Pack bedroom", "Pack living room", "Label all boxes", "Arrange moving truck", "Clean old apartment", "Update address", "Transfer internet service"]
+        },
+        wedding: {
+            title: "Wedding Planning",
+            items: ["Set budget", "Choose wedding date", "Book venue", "Hire caterer", "Choose photographer", "Select wedding party", "Order invitations", "Plan ceremony", "Arrange transportation", "Plan reception"]
+        },
+        job: {
+            title: "Job Search",
+            items: ["Update resume", "Update LinkedIn profile", "Research target companies", "Write cover letter template", "Apply to 5 jobs", "Follow up on applications", "Practice interview questions", "Prepare portfolio", "Network with contacts", "Review job alerts"]
+        },
+        daily: {
+            title: "Daily Routine",
+            items: ["Make bed", "Brush teeth", "Exercise", "Check emails", "Plan day priorities", "Drink 8 glasses of water", "Read for 20 minutes", "Review tomorrow's schedule", "Tidy workspace", "Reflect on day"]
+        },
+        event: {
+            title: "Event Planning",
+            items: ["Set event date & time", "Book venue", "Create guest list", "Send invitations", "Plan menu", "Arrange decorations", "Book entertainment", "Plan seating arrangement", "Prepare speech/toast", "Confirm all vendors"]
+        }
+    };
+
+    let checklists = [];
+    let modalCallback = null;
+    let draggedItem = null;
+
+    function init() {
+        const saved = localStorage.getItem('joymiz_checklists');
+        if (saved) {
+            try {
+                checklists = JSON.parse(saved);
+            } catch (e) {
+                checklists = [];
+            }
+        }
+        render();
+    }
+
+    function save() {
+        localStorage.setItem('joymiz_checklists', JSON.stringify(checklists));
+    }
+
+    function generateId() {
+        return Date.now().toString(36) + Math.random().toString(36).substr(2);
+    }
+
+    function createNewChecklist(title) {
+        const checklist = {
+            id: generateId(),
+            title: title || "Untitled Checklist",
+            items: [],
+            createdAt: new Date().toISOString()
+        };
+        checklists.unshift(checklist);
+        save();
+        render();
+        showToast('Checklist created!');
+    }
+
+    function createFromTemplate(templateKey) {
+        const template = TEMPLATES[templateKey];
+        const checklist = {
+            id: generateId(),
+            title: template.title,
+            items: template.items.map(text => ({
+                id: generateId(),
+                text: text,
+                completed: false
+            })),
+            createdAt: new Date().toISOString()
+        };
+        checklists.unshift(checklist);
+        save();
+        render();
+        showToast(`${template.title} checklist created!`);
+    }
+
+    function deleteChecklist(id) {
+        showModal('Delete Checklist', 'Are you sure you want to delete this entire checklist?', () => {
+            checklists = checklists.filter(c => c.id !== id);
+            save();
+            render();
+            showToast('Checklist deleted');
+        });
+    }
+
+    function toggleItem(checklistId, itemId) {
+        const checklist = checklists.find(c => c.id === checklistId);
+        if (checklist) {
+            const item = checklist.items.find(i => i.id === itemId);
+            if (item) {
+                item.completed = !item.completed;
+                save();
+                render();
+            }
+        }
+    }
+
+    function deleteItem(checklistId, itemId) {
+        const checklist = checklists.find(c => c.id === checklistId);
+        if (checklist) {
+            checklist.items = checklist.items.filter(i => i.id !== itemId);
+            save();
+            render();
+        }
+    }
+
+    function addItem(checklistId, text) {
+        if (!text.trim()) return;
+        const checklist = checklists.find(c => c.id === checklistId);
+        if (checklist) {
+            checklist.items.push({
+                id: generateId(),
+                text: text.trim(),
+                completed: false
+            });
+            save();
+            render();
+        }
+    }
+
+    function updateItemText(checklistId, itemId, text) {
+        const checklist = checklists.find(c => c.id === checklistId);
+        if (checklist) {
+            const item = checklist.items.find(i => i.id === itemId);
+            if (item) {
+                item.text = text;
+                save();
+            }
+        }
+    }
+
+    function updateChecklistTitle(id, title) {
+        const checklist = checklists.find(c => c.id === id);
+        if (checklist) {
+            checklist.title = title;
+            save();
+        }
+    }
+
+    function moveItem(checklistId, itemId, direction) {
+        const checklist = checklists.find(c => c.id === checklistId);
+        if (!checklist) return;
+        const index = checklist.items.findIndex(i => i.id === itemId);
+        if (index === -1) return;
+        
+        const newIndex = index + direction;
+        if (newIndex < 0 || newIndex >= checklist.items.length) return;
+        
+        const item = checklist.items.splice(index, 1)[0];
+        checklist.items.splice(newIndex, 0, item);
+        save();
+        render();
+    }
+
+    function moveItemToIndex(checklistId, fromIndex, toIndex) {
+        const checklist = checklists.find(c => c.id === checklistId);
+        if (!checklist) return;
+        const item = checklist.items.splice(fromIndex, 1)[0];
+        checklist.items.splice(toIndex, 0, item);
+        save();
+        render();
+    }
+
+    function getProgress(checklist) {
+        if (checklist.items.length === 0) return 0;
+        const completed = checklist.items.filter(i => i.completed).length;
+        return Math.round((completed / checklist.items.length) * 100);
+    }
+
+    function printAll() {
+        window.print();
+    }
+
+    function clearAll() {
+        showModal('Clear All', 'Are you sure you want to delete ALL checklists? This cannot be undone.', () => {
+            checklists = [];
+            save();
+            render();
+            showToast('All checklists cleared');
+        });
+    }
+
+    function showModal(title, message, callback) {
+        document.getElementById('modalTitle').textContent = title;
+        document.getElementById('modalMessage').textContent = message;
+        modalCallback = callback;
+        document.getElementById('modalOverlay').classList.add('active');
+    }
+
+    function closeModal() {
+        document.getElementById('modalOverlay').classList.remove('active');
+        modalCallback = null;
+    }
+
+    document.getElementById('modalConfirmBtn').addEventListener('click', () => {
+        if (modalCallback) modalCallback();
+        closeModal();
+    });
+
+    document.getElementById('modalOverlay').addEventListener('click', (e) => {
+        if (e.target === e.currentTarget) closeModal();
+    });
+
+    function showToast(message) {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+
+    function render() {
+        const container = document.getElementById('checklistsContainer');
+        const emptyState = document.getElementById('emptyState');
+
+        if (checklists.length === 0) {
+            container.innerHTML = '';
+            container.appendChild(createEmptyState());
+            return;
+        }
+
+        container.innerHTML = checklists.map(checklist => renderChecklist(checklist)).join('');
+        
+        // Attach drag event listeners
+        document.querySelectorAll('.item[data-id]').forEach(item => {
+            item.addEventListener('dragstart', handleDragStart);
+            item.addEventListener('dragend', handleDragEnd);
+            item.addEventListener('dragover', handleDragOver);
+            item.addEventListener('drop', handleDrop);
+            item.addEventListener('dragleave', handleDragLeave);
+        });
+    }
+
+    function createEmptyState() {
+        const div = document.createElement('div');
+        div.className = 'empty-state';
+        div.id = 'emptyState';
+        div.innerHTML = `
+            <div class="empty-state-icon">📋</div>
+            <h3>No checklists yet</h3>
+            <p>Create your first checklist or use a template to get started!</p>
+        `;
+        return div;
+    }
+
+    function renderChecklist(checklist) {
+        const progress = getProgress(checklist);
+        const completedCount = checklist.items.filter(i => i.completed).length;
+        const totalCount = checklist.items.length;
+
+        return `
+            <div class="checklist-card" data-checklist-id="${checklist.id}">
+                <div class="checklist-header">
+                    <input type="text" class="checklist-title-input" value="${escapeHtml(checklist.title)}" 
+                        onchange="updateChecklistTitle('${checklist.id}', this.value)"
+                        placeholder="Checklist title">
+                    <div class="checklist-header-actions">
+                        <button class="btn-icon" onclick="printChecklist('${checklist.id}')" title="Print">🖨</button>
+                        <button class="btn-icon danger" onclick="deleteChecklist('${checklist.id}')" title="Delete">🗑</button>
+                    </div>
+                </div>
+                
+                <div class="progress-section">
+                    <div class="progress-info">
+                        <span>${completedCount} of ${totalCount} completed</span>
+                        <span>${progress}%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill ${progress === 100 ? 'complete' : ''}" style="width: ${progress}%"></div>
+                    </div>
+                </div>
+
+                <div class="items-list" data-checklist-id="${checklist.id}">
+                    ${checklist.items.map((item, index) => renderItem(checklist.id, item, index, checklist.items.length)).join('')}
+                </div>
+
+                <div class="add-item-section">
+                    <div class="add-item-input">
+                        <input type="text" placeholder="Add an item..." 
+                            id="input-${checklist.id}"
+                            onkeypress="if(event.key==='Enter') handleAddItem('${checklist.id}')">
+                        <button onclick="handleAddItem('${checklist.id}')">Add</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    function renderItem(checklistId, item, index, totalItems) {
+        return `
+            <div class="item ${item.completed ? 'completed' : ''}" data-id="${item.id}" data-index="${index}" draggable="true">
+                <label class="item-checkbox">
+                    <input type="checkbox" ${item.completed ? 'checked' : ''} 
+                        onchange="toggleItem('${checklistId}', '${item.id}')">
+                    <span class="checkmark"></span>
+                </label>
+                <input type="text" class="item-text-input" value="${escapeHtml(item.text)}" 
+                    onchange="updateItemText('${checklistId}', '${item.id}', this.value)"
+                    onblur="updateItemText('${checklistId}', '${item.id}', this.value)">
+                <div class="item-actions">
+                    <button class="reorder-btn" onclick="moveItem('${checklistId}', '${item.id}', -1)" 
+                        ${index === 0 ? 'disabled' : ''} title="Move up">▲</button>
+                    <button class="reorder-btn" onclick="moveItem('${checklistId}', '${item.id}', 1)" 
+                        ${index === totalItems - 1 ? 'disabled' : ''} title="Move down">▼</button>
+                    <button class="btn-icon danger" onclick="deleteItem('${checklistId}', '${item.id}')" title="Delete">✕</button>
+                </div>
+            </div>
+        `;
+    }
+
+    function handleAddItem(checklistId) {
+        const input = document.getElementById(`input-${checklistId}`);
+        if (input && input.value.trim()) {
+            addItem(checklistId, input.value);
+            input.value = '';
+            input.focus();
+        }
+    }
+
+    function printChecklist(id) {
+        const checklist = checklists.find(c => c.id === id);
+        if (!checklist) return;
+        
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>${checklist.title}</title>
+                <style>
+                    body { font-family: -apple-system, sans-serif; padding: 2rem; }
+                    h1 { margin-bottom: 1rem; }
+                    .item { padding: 0.5rem 0; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 0.5rem; }
+                    .checkbox { width: 16px; height: 16px; border: 2px solid #333; border-radius: 3px; }
+                    .completed { text-decoration: line-through; color: #999; }
+                </style>
+            </head>
+            <body>
+                <h1>${escapeHtml(checklist.title)}</h1>
+                ${checklist.items.map(item => `
+                    <div class="item">
+                        <div class="checkbox"></div>
+                        <span class="${item.completed ? 'completed' : ''}">${escapeHtml(item.text)}</span>
+                    </div>
+                `).join('')}
+            </body>
+            </html>
+        `);
+        printWindow.document.close();
+        printWindow.print();
+    }
+
+    function handleDragStart(e) {
+        draggedItem = e.target.closest('.item');
+        draggedItem.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', draggedItem.dataset.index);
+    }
+
+    function handleDragEnd(e) {
+        e.target.closest('.item')?.classList.remove('dragging');
+        document.querySelectorAll('.item').forEach(item => item.classList.remove('drag-over'));
+        draggedItem = null;
+    }
+
+    function handleDragOver(e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        const item = e.target.closest('.item');
+        if (item && item !== draggedItem) {
+            item.classList.add('drag-over');
+        }
+    }
+
+    function handleDragLeave(e) {
+        const item = e.target.closest('.item');
+        if (item) {
+            item.classList.remove('drag-over');
+        }
+    }
+
+    function handleDrop(e) {
+        e.preventDefault();
+        const dropTarget = e.target.closest('.item');
+        if (!dropTarget || !draggedItem) return;
+
+        const container = draggedItem.closest('.items-list');
+        const checklistId = container.dataset.checklistId;
+        const fromIndex = parseInt(draggedItem.dataset.index);
+        const toIndex = parseInt(dropTarget.dataset.index);
+
+        if (fromIndex !== toIndex) {
+            moveItemToIndex(checklistId, fromIndex, toIndex);
+        }
+
+        dropTarget.classList.remove('drag-over');
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // Initialize
+    init();
+</script>
+
+</body>
+</html>
